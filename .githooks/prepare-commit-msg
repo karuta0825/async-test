@@ -1,0 +1,19 @@
+#!/bin/bash
+
+readonly COMMIT_MSG_FILE=$1
+readonly COMMIT_SOURCE=$2
+
+case "${COMMIT_SOURCE}" in
+  commit) # use -c/-C/--amend
+    : # 何もしない
+  ;;
+  *)
+    # ブランチ名取得
+    branch_name=$(git name-rev --name-only HEAD)
+    # ブランチ名をコミットメッセージの前に挿入する
+    # emacsで使うときは先頭#で始まるものを除外するように設定しないとね。
+    perl -p -i.bak -e "if ($. == 1) { s/^/[$branch_name] / }" $COMMIT_MSG_FILE
+  ;;
+esac
+
+
